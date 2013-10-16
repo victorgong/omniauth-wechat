@@ -10,19 +10,21 @@ module OmniAuth
         :authorize_url => 'http://open.weixin.qq.com/connect/oauth2/authorize',
         :token_url => "https://api.weixin.qq.com/sns/oauth2/access_token"
       }
-      option :authorize_params, {
-        :appid => options.client_id,
-        :secret => options.client_secret,
-        :scope => 'snsapi_base,snsapi_userinfo'
-        
-      }
-      option :token_params, {
-        :appid =>options.client_id,
-        :secret=>options.client_secret
-      }
+
       def request_phase
-        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(authorize_params))+'#wechat_redirect'
+        #redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(authorize_params))+'#wechat_redirect'
+        redirect client.auth_code.authorize_url({:redirect_uri => 'http://www.intime.com.cn'}.merge(authorize_params))+'#wechat_redirect'
       end
+      def authorize_params
+        params = super
+        params.merge({:scope=>'snsapi_base',:appid=>options.client_id})
+      end
+
+      def token_params
+        params = super
+        params.merge({:appid=>options.client_id,:secret=>options.client_secret})
+      end
+      
       uid do
         @uid ||= begin
           access_token[:openid]
@@ -31,7 +33,7 @@ module OmniAuth
 
       info do 
         { 
-          :nickname => raw_info['nickname'],
+          :nickname => raw_info['nickname'].nil??access_token[:openid]:raw_info['nickname'],
           :name => raw_info['nickname'],
           :image => raw_info['figureurl_1'],
         }
@@ -57,4 +59,4 @@ module OmniAuth
   end
 end
 
-OmniAuth.config.add_camelization('qq_connect', 'QQConnect')
+OmniAuth.config.add_camelization('wechat', 'WeChat')
