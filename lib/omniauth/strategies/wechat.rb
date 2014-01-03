@@ -12,8 +12,7 @@ module OmniAuth
       }
 
       def request_phase
-        #redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(authorize_params))+'#wechat_redirect'
-        redirect client.auth_code.authorize_url({:redirect_uri => 'http://www.intime.com.cn'}.merge(authorize_params))+'#wechat_redirect'
+        redirect client.auth_code.authorize_url({:redirect_uri => callback_url}.merge(authorize_params))+'#wechat_redirect'
       end
       def authorize_params
         params = super
@@ -35,7 +34,7 @@ module OmniAuth
         { 
           :nickname => raw_info['nickname'].nil??access_token[:openid]:raw_info['nickname'],
           :name => raw_info['nickname'],
-          :image => raw_info['figureurl_1'],
+          :image => raw_info['headimgurl'],
         }
       end
       
