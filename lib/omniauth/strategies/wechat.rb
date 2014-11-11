@@ -46,12 +46,11 @@ module OmniAuth
       end
 
       def authorize_params
-        state_param = SecureRandom.hex(24)
         options.authorize_params.merge({:appid => options.appid,
                                         :redirect_uri => callback_url,
                                         :response_type => 'code',
-                                        :scope => 'snsapi_userinfo',
-                                        :state => state_param
+                                        :scope => request.params['scope'] || 'snsapi_userinfo',
+                                        :state => request.params['state']
                                        })
       end
 
